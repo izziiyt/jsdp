@@ -14,7 +14,7 @@ In such cases, `jsdp` is superior as it can also sort the contents of arrays.
 (`go` is required)
 
 ```bash
-go install github.com/izziiyt/jsdp@v0.1.0
+go install github.com/izziiyt/jsdp@v0.2.0
 ```
 
 # Example
