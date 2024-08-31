@@ -36,7 +36,7 @@ func TestSort(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			var data map[string]interface{}
+			var data map[string]any
 			if err := json.Unmarshal([]byte(tt.value), &data); err != nil {
 				t.Fatalf("Unmarshal() error = %v", err)
 			}

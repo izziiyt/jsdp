@@ -9,10 +9,10 @@ import (
 )
 
 type SortedJSON struct {
-	data map[string]interface{}
+	data map[string]any
 }
 
-func NewSortedJSON(data map[string]interface{}) *SortedJSON {
+func NewSortedJSON(data map[string]any) *SortedJSON {
 	return &SortedJSON{data: data}
 }
 
@@ -21,35 +21,35 @@ func (sj *SortedJSON) Sort() {
 }
 
 // マップをソートする
-func (sj *SortedJSON) sortMap(m map[string]interface{}) {
+func (sj *SortedJSON) sortMap(m map[string]any) {
 	for _, v := range m {
 		switch vv := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			sj.sortMap(vv)
-		case []interface{}:
+		case []any:
 			sj.sortSlice(vv)
 		}
 	}
 }
 
 // スライスをソートする
-func (sj *SortedJSON) sortSlice(s []interface{}) {
-	mpl := make([]map[string]interface{}, 0)
-	sll := make([][]interface{}, 0)
+func (sj *SortedJSON) sortSlice(s []any) {
+	mpl := make([]map[string]any, 0)
+	sll := make([][]any, 0)
 	stl := make([]string, 0)
 	bol := make([]bool, 0)
 	fll := make([]float64, 0)
-	nulll := make([]interface{}, 0)
+	nulll := make([]any, 0)
 	for _, v := range s {
 		if v == nil {
 			nulll = append(nulll, v)
 			continue
 		}
 		switch vv := v.(type) {
-		case map[string]interface{}:
+		case map[string]any:
 			sj.sortMap(vv)
 			mpl = append(mpl, vv)
-		case []interface{}:
+		case []any:
 			sj.sortSlice(vv)
 			sll = append(sll, vv)
 		case bool:
@@ -113,7 +113,7 @@ func (sj *SortedJSON) MarshalJSON() ([]byte, error) {
 }
 
 // マップをソートしてエンコードする
-func (sj *SortedJSON) marshalMap(m map[string]interface{}) ([]byte, error) {
+func (sj *SortedJSON) marshalMap(m map[string]any) ([]byte, error) {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
 
@@ -139,11 +139,11 @@ func (sj *SortedJSON) marshalMap(m map[string]interface{}) ([]byte, error) {
 }
 
 // 値をエンコードする
-func (sj *SortedJSON) marshalValue(v interface{}) ([]byte, error) {
+func (sj *SortedJSON) marshalValue(v any) ([]byte, error) {
 	switch vv := v.(type) {
-	case map[string]interface{}:
+	case map[string]any:
 		return sj.marshalMap(vv)
-	case []interface{}:
+	case []any:
 		return sj.marshalSlice(vv)
 	default:
 		return json.Marshal(v)
@@ -151,7 +151,7 @@ func (sj *SortedJSON) marshalValue(v interface{}) ([]byte, error) {
 }
 
 // スライスをエンコードする
-func (sj *SortedJSON) marshalSlice(s []interface{}) ([]byte, error) {
+func (sj *SortedJSON) marshalSlice(s []any) ([]byte, error) {
 	var buf bytes.Buffer
 	buf.WriteByte('[')
 

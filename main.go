@@ -18,7 +18,7 @@ func main() {
 		errExit(err)
 	}
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(jsonData, &data); err != nil {
 		errExit(err)
 	}
