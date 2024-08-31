@@ -2,19 +2,19 @@
 [![Go Report Card][go-report-img]][go-report]
 [![License: MIT][license-img]][license]
 
-# Why DSTJ (Deep Sort on The Json)?
+# Why jsdp (Json Sort in Deep)?
 
-`dstj` is a simple tool for recursively sorting objects and arrays in JSON files.
+`jsdp` is a simple tool for recursively sorting objects and arrays in JSON files.
 It is useful in situations where you want to compare JSON files that have the same content but different order.
 While `jq -S` and `dictknife` can sort objects, they cannot sort arrays.
-In such cases, `dstj` is superior as it can also sort the contents of arrays.
+In such cases, `jsdp` is superior as it can also sort the contents of arrays.
 
 # Install
 
 (`go` is required)
 
 ```bash
-go install github.com/izziiyt/dstj@v0.1.0
+go install github.com/izziiyt/jsdp@v0.1.0
 ```
 
 # Example
@@ -51,7 +51,7 @@ $ cat 1.json
   ],
   "b": 2
 }
-$ diff <(cat 0.json | dstj | jq) <(cat 1.json | dstj | jq)
+$ diff <(cat 0.json | jsdp | jq) <(cat 1.json | jsdp | jq)
 3d2
 <     false,
 ```
@@ -131,9 +131,9 @@ after
 }
 ```
 
-[ci]: https://github.com/izziiyt/dstj/actions/workflows/ci.yaml
-[ci-img]: https://github.com/izziiyt/dstj/actions/workflows/ci.yml/badge.svg
-[go-report]: https://goreportcard.com/report/github.com/izziiyt/dstj
-[go-report-img]: https://goreportcard.com/badge/github.com/izziiyt/dstj
+[ci]: https://github.com/izziiyt/jsdp/actions/workflows/ci.yaml
+[ci-img]: https://github.com/izziiyt/jsdp/actions/workflows/ci.yml/badge.svg
+[go-report]: https://goreportcard.com/report/github.com/izziiyt/jsdp
+[go-report-img]: https://goreportcard.com/badge/github.com/izziiyt/jsdp
 [license]: https://opensource.org/licenses/MIT
 [license-img]: https://img.shields.io/badge/License-MIT-yellow.svg

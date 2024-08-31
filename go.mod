@@ -1,3 +1,3 @@
-module github.com/izziiyt/dstj
+module github.com/izziiyt/jsdp
 
 go 1.23
