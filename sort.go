@@ -28,11 +28,9 @@ func (sj *SortedJSON) sortMap(m map[string]any) {
 	}
 }
 
-// スライスをソートする
-// スライスの要素がマップやスライスの場合は再帰的にソートする
-// スライスの要素が数値、真偽値、文字列の場合はそれぞれのスライスに分けてソートする
-// nil はスライスの最後に移動する
-// スライスの要素が異なる型の場合は順序が
+// If the elements of the slice are maps or slices, sort them recursively
+// Sort the elements of the slice in the order of boolean, number, string, map, slice, and null
+// Sub-slices of numbers, booleans, and strings are sorted respectively
 func (sj *SortedJSON) sortSlice(s []any) {
 	blsl := make([]bool, 0)
 	flsl := make([]float64, 0)
@@ -41,7 +39,6 @@ func (sj *SortedJSON) sortSlice(s []any) {
 	mpsl := make([]map[string]any, 0)
 	nlsl := make([]any, 0)
 
-	// スライスの要素を型ごとに分ける
 	for _, v := range s {
 		switch vv := v.(type) {
 		case bool:
@@ -63,12 +60,10 @@ func (sj *SortedJSON) sortSlice(s []any) {
 		}
 	}
 
-	// スライスを型ごとにソートする
 	sort.StringSlice.Sort(stsl)
 	sort.Float64s(flsl)
 	sort.Slice(blsl, func(i, j int) bool { return !blsl[i] && blsl[j] })
 
-	// 元のスライスにソートされた要素を再配置
 	i := 0
 	for _, v := range blsl {
 		s[i] = v

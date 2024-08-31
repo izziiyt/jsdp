@@ -4,9 +4,10 @@
 
 # Why DSTJ (Deep Sort on The Json)?
 
-`dstj` is a simple tool to sort the all objects and arrays in a JSON file. 
-It is useful when you want to compare two JSON files, but the contents are not in the same order.
-`dstj` is more powerful that it can sort arrays rather than `jq -S` or `dictknife` in some cases.
+`dstj` is a simple tool for recursively sorting objects and arrays in JSON files.
+It is useful in situations where you want to compare JSON files that have the same content but different order.
+While `jq -S` and `dictknife` can sort objects, they cannot sort arrays.
+In such cases, `dstj` is superior as it can also sort the contents of arrays.
 
 # Install
 
@@ -57,11 +58,12 @@ $ diff <(cat 0.json | dstj | jq) <(cat 1.json | dstj | jq)
 
 # Sorting Order
 
-すべて昇順でソートされます。以降の説明における json 内のデータ型は [RFC-8259](https://datatracker.ietf.org/doc/html/rfc8259#section-3) の表記に従います
+Everything is sorted in ascending order.
+The data types in the JSON are described according to [RFC-8259](https://datatracker.ietf.org/doc/html/rfc8259#section-3).
 
 ## object
 
-object はキーの文字列順序でソートされます。
+Objects are sorted by the string order of their keys.
 
 before
 ```json
@@ -83,7 +85,7 @@ after
 
 ## array
 
-array はまず以下の順序でデータの型に応じてソートされます。
+Arrays are sorted first by the following order of data types:
 
 - false
 - true
@@ -93,7 +95,7 @@ array はまず以下の順序でデータの型に応じてソートされま�
 - object
 - null
 
-型で分けられた部分配列はそれぞれの型に応じたソートがされます。
+Subarrays divided by type are then sorted according to their respective types.
 
 before
 ```json
