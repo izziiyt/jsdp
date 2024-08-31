@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"slices"
 	"sort"
 )
 
@@ -13,14 +12,11 @@ type SortedJSON struct {
 }
 
 func NewSortedJSON(data map[string]any) *SortedJSON {
-	return &SortedJSON{data: data}
-}
-
-func (sj *SortedJSON) Sort() {
+	sj := &SortedJSON{data: data}
 	sj.sortMap(sj.data)
+	return sj
 }
 
-// マップをソートする
 func (sj *SortedJSON) sortMap(m map[string]any) {
 	for _, v := range m {
 		switch vv := v.(type) {
@@ -33,86 +29,77 @@ func (sj *SortedJSON) sortMap(m map[string]any) {
 }
 
 // スライスをソートする
+// スライスの要素がマップやスライスの場合は再帰的にソートする
+// スライスの要素が数値、真偽値、文字列の場合はそれぞれのスライスに分けてソートする
+// nil はスライスの最後に移動する
+// スライスの要素が異なる型の場合は順序が
 func (sj *SortedJSON) sortSlice(s []any) {
-	mpl := make([]map[string]any, 0)
-	sll := make([][]any, 0)
-	stl := make([]string, 0)
-	bol := make([]bool, 0)
-	fll := make([]float64, 0)
-	nulll := make([]any, 0)
+	blsl := make([]bool, 0)
+	flsl := make([]float64, 0)
+	stsl := make([]string, 0)
+	slsl := make([][]any, 0)
+	mpsl := make([]map[string]any, 0)
+	nlsl := make([]any, 0)
+
+	// スライスの要素を型ごとに分ける
 	for _, v := range s {
-		if v == nil {
-			nulll = append(nulll, v)
-			continue
-		}
 		switch vv := v.(type) {
-		case map[string]any:
-			sj.sortMap(vv)
-			mpl = append(mpl, vv)
+		case bool:
+			blsl = append(blsl, vv)
+		case float64:
+			flsl = append(flsl, vv)
+		case string:
+			stsl = append(stsl, vv)
 		case []any:
 			sj.sortSlice(vv)
-			sll = append(sll, vv)
-		case bool:
-			bol = append(bol, vv)
-		case string:
-			stl = append(stl, vv)
-		case float64:
-			fll = append(fll, vv)
+			slsl = append(slsl, vv)
+		case map[string]any:
+			sj.sortMap(vv)
+			mpsl = append(mpsl, vv)
+		case nil:
+			nlsl = append(nlsl, vv)
 		default:
 			panic(fmt.Sprintf("unexpected type %T", v))
 		}
 	}
-	sort.StringSlice.Sort(stl)
-	slices.SortFunc(fll, func(i, j float64) int {
-		if i < j {
-			return -1
-		}
-		return 1
-	})
-	slices.SortFunc(bol, func(i, j bool) int {
-		x := 0
-		if i {
-			x++
-		}
-		if j {
-			x--
-		}
-		return x
-	})
 
+	// スライスを型ごとにソートする
+	sort.StringSlice.Sort(stsl)
+	sort.Float64s(flsl)
+	sort.Slice(blsl, func(i, j int) bool { return !blsl[i] && blsl[j] })
+
+	// 元のスライスにソートされた要素を再配置
 	i := 0
-	for _, v := range nulll {
+	for _, v := range blsl {
 		s[i] = v
 		i++
 	}
-	for _, v := range fll {
+	for _, v := range flsl {
 		s[i] = v
 		i++
 	}
-	for _, v := range bol {
+	for _, v := range stsl {
 		s[i] = v
 		i++
 	}
-	for _, v := range stl {
+	for _, v := range slsl {
 		s[i] = v
 		i++
 	}
-	for _, v := range sll {
+	for _, v := range mpsl {
 		s[i] = v
 		i++
 	}
-	for _, v := range mpl {
+	for _, v := range nlsl {
 		s[i] = v
 		i++
 	}
 }
 
-// ソートされた JSON データをエンコードする
 func (sj *SortedJSON) MarshalJSON() ([]byte, error) {
 	return sj.marshalMap(sj.data)
 }
 
-// マップをソートしてエンコードする
 func (sj *SortedJSON) marshalMap(m map[string]any) ([]byte, error) {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
@@ -138,7 +125,6 @@ func (sj *SortedJSON) marshalMap(m map[string]any) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// 値をエンコードする
 func (sj *SortedJSON) marshalValue(v any) ([]byte, error) {
 	switch vv := v.(type) {
 	case map[string]any:
@@ -150,7 +136,6 @@ func (sj *SortedJSON) marshalValue(v any) ([]byte, error) {
 	}
 }
 
-// スライスをエンコードする
 func (sj *SortedJSON) marshalSlice(s []any) ([]byte, error) {
 	var buf bytes.Buffer
 	buf.WriteByte('[')

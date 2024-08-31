@@ -23,33 +23,29 @@ const sampleJSON0 = `{
 
 func TestSort(t *testing.T) {
 	tests := []struct {
-		value string
-		name  string
-		exp   string
+		value    string
+		name     string
+		expected string
 	}{
 		{
-			name:  "sampleJSON0",
-			value: sampleJSON0,
-			exp:   `{"a":1,"b":[null,0.23,1,true,"c",[0,2],{"a":0}],"c":{"a":false,"b":2},"d":[1,{"a":1}]}`,
+			name:     "sampleJSON0",
+			value:    sampleJSON0,
+			expected: `{"a":1,"b":[null,0.23,1,true,"c",[0,2],{"a":0}],"c":{"a":false,"b":2},"d":[1,{"a":1}]}`,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
 			var data map[string]any
 			if err := json.Unmarshal([]byte(tt.value), &data); err != nil {
 				t.Fatalf("Unmarshal() error = %v", err)
 			}
-			sortedJSON := NewSortedJSON(data)
-			sortedJSON.Sort()
-
-			sortedData, err := sortedJSON.MarshalJSON()
+			sortedData, err := NewSortedJSON(data).MarshalJSON()
 			if err != nil {
 				t.Fatalf("MarshalJSON() error = %v", err)
 			}
 			res := string(sortedData)
-			if string(sortedData) != tt.exp {
-				t.Errorf("want %s but %s", tt.exp, res)
+			if string(sortedData) != tt.expected {
+				t.Errorf("expected: %s, but: %s", tt.expected, res)
 			}
 		})
 	}

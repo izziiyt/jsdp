@@ -13,23 +13,20 @@ func errExit(err error) {
 }
 
 func main() {
-	jsonData, err := io.ReadAll(os.Stdin)
+	input, err := io.ReadAll(os.Stdin)
 	if err != nil {
 		errExit(err)
 	}
 
 	var data map[string]any
-	if err := json.Unmarshal(jsonData, &data); err != nil {
+	if err := json.Unmarshal(input, &data); err != nil {
 		errExit(err)
 	}
 
-	sortedJSON := NewSortedJSON(data)
-	sortedJSON.Sort()
-
-	sortedData, err := sortedJSON.MarshalJSON()
+	res, err := NewSortedJSON(data).MarshalJSON()
 	if err != nil {
 		errExit(err)
 	}
 
-	fmt.Println(string(sortedData))
+	fmt.Println(string(res))
 }
