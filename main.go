@@ -13,7 +13,16 @@ func errExit(err error) {
 }
 
 func main() {
-	input, err := io.ReadAll(os.Stdin)
+	var input []byte
+	var err error
+
+	if len(os.Args) > 1 {
+		input, err = os.ReadFile(os.Args[0])
+	} else {
+		// if argument is not passed, read data from stdin
+		input, err = io.ReadAll(os.Stdin)
+	}
+
 	if err != nil {
 		errExit(err)
 	}

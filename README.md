@@ -11,10 +11,14 @@ In such cases, `jsdp` is superior as it can also sort the contents of arrays.
 
 # Install
 
-(`go` is required)
-
+go
 ```bash
-go install github.com/izziiyt/jsdp@v0.2.0
+go install github.com/izziiyt/jsdp
+```
+
+mise
+```bash
+mise use --global go:github.com/izziiyt/jsdp
 ```
 
 # Example
@@ -51,7 +55,7 @@ $ cat 1.json
   ],
   "b": 2
 }
-$ diff <(cat 0.json | jsdp | jq) <(cat 1.json | jsdp | jq)
+$ diff <(jsdp 0.json | jq) <(cat 1.json | jsdp | jq)
 3d2
 <     false,
 ```
