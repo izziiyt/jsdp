@@ -6,7 +6,7 @@ import (
 )
 
 const sampleJSON0 = `{
-  "b": [[2, 0], "c", 1, {"a": 0}, 0.23, true, null],
+  "b": [[2, 0], "c", 1, {"a": 0}, 0.23, true, null, false],
   "a": 1,
   "d": [
     {
@@ -30,7 +30,7 @@ func TestSort(t *testing.T) {
 		{
 			name:     "sampleJSON0",
 			value:    sampleJSON0,
-			expected: `{"a":1,"b":[null,0.23,1,true,"c",[0,2],{"a":0}],"c":{"a":false,"b":2},"d":[1,{"a":1}]}`,
+			expected: `{"a":1,"b":[false,true,0.23,1,"c",[0,2],{"a":0},null],"c":{"a":false,"b":2},"d":[1,{"a":1}]}`,
 		},
 	}
 	for _, tt := range tests {
