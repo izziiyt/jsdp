@@ -14,7 +14,7 @@ In such cases, `dstj` is superior as it can also sort the contents of arrays.
 (`go` is required)
 
 ```bash
-go intsall github.com/izziiyt/dstj@v0.1.0
+go install github.com/izziiyt/dstj@v0.1.0
 ```
 
 # Example
