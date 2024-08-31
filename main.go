@@ -17,7 +17,7 @@ func main() {
 	var err error
 
 	if len(os.Args) > 1 {
-		input, err = os.ReadFile(os.Args[0])
+		input, err = os.ReadFile(os.Args[1])
 	} else {
 		// if argument is not passed, read data from stdin
 		input, err = io.ReadAll(os.Stdin)
