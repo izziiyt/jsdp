@@ -18,8 +18,27 @@ const sampleJSON0 = `{
     "b": 2,
     "a": false
   }
-}
-`
+}`
+
+const sampleJSON1 = `{
+  "a": [
+    { "a":  1},
+    false,
+    "b",
+    1,
+    null,
+    "a",
+    [1, false],
+    true,
+    0.5
+  ]
+}`
+
+const sampleJSON2 = `{
+  "c": false,
+  "a": 1,
+  "b": null
+}`
 
 func TestSort(t *testing.T) {
 	tests := []struct {
@@ -31,6 +50,16 @@ func TestSort(t *testing.T) {
 			name:     "sampleJSON0",
 			value:    sampleJSON0,
 			expected: `{"a":1,"b":[false,true,0.23,1,"c",[0,2],{"a":0},null],"c":{"a":false,"b":2},"d":[1,{"a":1}]}`,
+		},
+		{
+			name:     "sampleJSON1",
+			value:    sampleJSON1,
+			expected: `{"a":[false,true,0.5,1,"a","b",[false,1],{"a":1},null]}`,
+		},
+		{
+			name:     "sampleJSON2",
+			value:    sampleJSON2,
+			expected: `{"a":1,"b":null,"c":false}`,
 		},
 	}
 	for _, tt := range tests {

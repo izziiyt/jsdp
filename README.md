@@ -10,13 +10,15 @@ It is useful when you want to compare two JSON files, but the contents are not i
 
 # Install
 
-(`go` is required to install `dstj`)
+(`go` is required)
 
 ```bash
 go intsall github.com/izziiyt/dstj@v0.1.0
 ```
 
 # Example
+
+(`jq` is required)
 
 ```bash
 $ cat 0.json
@@ -48,18 +50,36 @@ $ cat 1.json
   ],
   "b": 2
 }
-$ diff <(cat 0.json | dstj . | jq) <(cat 1.json | dstj . | jq)
+$ diff <(cat 0.json | dstj | jq) <(cat 1.json | dstj | jq)
 3d2
 <     false,
 ```
 
 # Sorting Order
 
-以下は昇順 `--ascending=true` でソートした場合の解説をします。json 内のデータ型は [RFC-8259](https://datatracker.ietf.org/doc/html/rfc8259#section-3) の表記に従います
+すべて昇順でソートされます。以降の説明における json 内のデータ型は [RFC-8259](https://datatracker.ietf.org/doc/html/rfc8259#section-3) の表記に従います
 
 ## object
 
 object はキーの文字列順序でソートされます。
+
+before
+```json
+{
+  "c": false,
+  "a": 1,
+  "b": null
+}
+```
+
+after
+```json
+{
+  "a": 1,
+  "b": null,
+  "c": false
+}
+```
 
 ## array
 
@@ -74,6 +94,40 @@ array はまず以下の順序でデータの型に応じてソートされま�
 - null
 
 型で分けられた部分配列はそれぞれの型に応じたソートがされます。
+
+before
+```json
+{
+  "a": [
+    { "a":  1},
+    false,
+    "b",
+    1,
+    null,
+    "a",
+    [1, false],
+    true,
+    0.5
+  ]
+}
+```
+
+after
+```json
+{
+  "a": [
+    false,
+    true,
+    0.5,
+    1,
+    "a",
+    "b",
+    [false, 1],
+    { "a":  1},
+    null
+  ]
+}
+```
 
 [ci]: https://github.com/izziiyt/dstj/actions/workflows/ci.yaml
 [ci-img]: https://github.com/izziiyt/dstj/actions/workflows/ci.yml/badge.svg
